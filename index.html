@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-validation">
+            <div class="main">
+                <form action="" method="POST" class="form" id="form-1">
+                    <h1 class="heading">Thành viên đăng ký</h1>
+                    <p class="desc">Nhập thông tin để đăng ký</p>
+        
+                    <div class="form-group">
+                        <label for="fullname" class="form-label">Tên đầy đủ</label>
+                        <input id="fullname" name="fullname" type="text" placeholder="Nhập đầy đủ họ và tên" class="form-control">
+                        <span class="form-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input id="email" name="email" type="text" placeholder="Email" class="form-control">
+                        <span class="form-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input id="password" name="password" type="password" placeholder="Nhập mật khẩu" class="form-control">
+                        <span class="form-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirmation" class="form-label">Nhập lại mật khẩu</label>
+                        <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Nhập lại mật khẩu" class="form-control">
+                        <span class="form-message"></span>
+                    </div>
+                    <button class="form-submit">Đăng ký</button>
+                </form>
+
+    
+            </div> 
+
+        </div>
+    </div>
+    <script src="Validator.js"></script>
+    <script>
+        Validator({
+            form: '#form-1',
+            rules: [
+                Validator.isRequired('#fullname'),
+                Validator.isEmail('#email'),
+                Validator.minLength('#password',6),
+                Validator.isConfirmed('#password_confirmation',function(){
+                    return document.querySelector('#form-1 #password').value;
+                })
+            ]
+        });
+    </script>
+</body>
+</html>
