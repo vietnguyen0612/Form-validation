@@ -1,17 +1,30 @@
 function Validator(option) {
 
+    var selectorRules = {};
+
     //Hàm thực hiện validate
 
     function Validate(inputElement, rule) {
-        var errorMessage = rule.test(inputElement.value)
         var errorElement = inputElement.parentElement.querySelector('.form-message')
-            if(errorMessage) {
-                errorElement.innerText = errorMessage
-                inputElement.parentElement.classList.add('invalid')
-            }else {
-                errorElement.innerText = ''
-                inputElement.parentElement.classList.remove('invalid')
-            }
+        var errorMessage ;
+
+        //lấy ra các rules của selector
+
+        var rules = selectorRules[rule.selector]
+
+        //lặp qua từng rules và check
+        for(var i = 0; i< rules.length ; i++ ){
+            errorMessage = rules[i](inputElement.value);
+            if(errorMessage) break;
+        }
+
+        if(errorMessage) {
+            errorElement.innerText = errorMessage
+            inputElement.parentElement.classList.add('invalid')
+        }else {
+            errorElement.innerText = ''
+            inputElement.parentElement.classList.remove('invalid')
+        }
     }
 
     //lấy element của form cần validate
@@ -19,9 +32,31 @@ function Validator(option) {
     var formElement = document.querySelector(option.form)
 
     if(formElement) {
+        //khi submit form
+        formElement.onsubmit = function(e) {
+            e.preventDefault()
+
+            //lặp qua từng rules và validate
+            option.rules.forEach(function(rule){
+                var inputElement = formElement.querySelector(rule.selector)
+                Validate(inputElement, rule)
+            })
+
+        }
+
+        //lặp qua mỗi rule và sử lý (lắng nghe các sự kiện blur, input,...)
         option.rules.forEach(function(rule) {
+
+            //Lưu lại các rules cho mỗi input
+            if(Array.isArray(selectorRules[rule.selector])) {
+                selectorRules[rule.selector].push(rule.test);
+            }else {
+                selectorRules[rule.selector] = [rule.test]
+            }
+
             var inputElement = formElement.querySelector(rule.selector)
             if(inputElement) {
+
                 // xử lý trường hợp blur ra ngoài
                 inputElement.onblur = function() {
                     Validate(inputElement, rule)
@@ -35,6 +70,7 @@ function Validator(option) {
                 }
             }
         })
+
     }
 }
 
