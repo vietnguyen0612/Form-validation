@@ -56,7 +56,16 @@
                 Validator.isConfirmed('#password_confirmation',function(){
                     return document.querySelector('#form-1 #password').value;
                 },'Mật khẩu nhập lại không chính xác')
-            ]
+            ],
+            onSubmit: function(data) {
+                alert(
+                    `
+                    fullname: ${data.fullname}
+                    email: ${data.email},
+                    password: ${data.password},
+                    password_confirmation: ${data.password_confirmation}
+                    `)
+            }
         });
     </script>
 </body>

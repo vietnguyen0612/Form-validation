@@ -25,6 +25,8 @@ function Validator(option) {
             errorElement.innerText = ''
             inputElement.parentElement.classList.remove('invalid')
         }
+
+        return !errorMessage
     }
 
     //lấy element của form cần validate
@@ -36,12 +38,28 @@ function Validator(option) {
         formElement.onsubmit = function(e) {
             e.preventDefault()
 
+            var isFormValid = true
+
             //lặp qua từng rules và validate
             option.rules.forEach(function(rule){
                 var inputElement = formElement.querySelector(rule.selector)
-                Validate(inputElement, rule)
-            })
+                var isValid = Validate(inputElement, rule)
 
+                if(!isValid) {
+                    isFormValid = false
+                }
+
+            })
+            if(isFormValid) {
+                if(typeof option.onSubmit === 'function' ) {
+                    var enableInputs = formElement.querySelectorAll('[name]')
+                    var formValues = Array.from(enableInputs).reduce(function(values,input){
+                        return (values[input.name] = input.value) && values;
+                    },{})
+                    option.onSubmit(formValues)
+                }
+            }
+            
         }
 
         //lặp qua mỗi rule và sử lý (lắng nghe các sự kiện blur, input,...)
